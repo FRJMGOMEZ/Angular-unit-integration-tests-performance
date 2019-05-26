@@ -1,31 +1,50 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import {RouterTestingModule} from '@angular/router/testing'
+import { By } from '@angular/platform-browser';
+import { RouterOutlet, RouterLinkWithHref} from '@angular/router';
 
 describe('AppComponent', () => {
+
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
       ],
+      imports:[
+         RouterTestingModule.withRoutes([])
+      ]
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   }));
+  
+  it('Should have a router-outlet',()=>{
+     
+    let router_outlet = fixture.debugElement.query(By.directive(RouterOutlet))
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    expect(router_outlet).toBeTruthy()
+    expect(router_outlet).not.toBeNull()
+    
+  })
 
-  it(`should have as title 'pruebas-unitarias'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('pruebas-unitarias');
-  });
+  it('Should have a link to medicos',async () => {
+    
 
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to pruebas-unitarias!');
-  });
+  const links = fixture.debugElement.queryAll(By.directive(RouterLinkWithHref));
+  let exist:boolean=false;
+
+ await links.forEach((link)=>{
+  
+  console.log(link.nativeElement)
+    if (link.attributes['routerLink'] === "['/medicos']") {
+      exist = true;
+      return
+    } 
+  })
+  expect(exist).toBeTruthy()
+  })
 });
